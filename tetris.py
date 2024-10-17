@@ -2,7 +2,7 @@ import pygame
 import random
 
 """
-10 x 20 grilla
+Grilla de 10 x 20
 formas: S, Z, I, O, J, L, T
 representadas en orden del 0 - 6
 """
@@ -20,7 +20,7 @@ top_left_x = (s_width - play_width) // 2
 top_left_y = s_height - play_height
 
 
-# DIFERENTES FORMAS, IGNORAR AUTOPEP8
+# TETROMINOS
 
 S = [
     [".....", "......", "..00..", ".00...", "....."],
@@ -88,13 +88,13 @@ class Piece(object):
 
 # Funcion para crear la grilla y las posiciones bloqueadas
 def create_grid(locked_positions={}):
-    grid = [[(0, 0, 0) for x in range(10)] for y in range(20)]
+    grid = [[(0, 0, 0) for x in range(10)] for x in range(20)]
 
-    for y in range(len(grid)):
-        for x in range(len(grid[y])):
-            if (x, y) in locked_positions:
-                color = locked_positions[(x, y)]
-                grid[y][x] = color
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            if (j, i) in locked_positions:
+                c = locked_positions[(j, i)]
+                grid[i][j] = c
     return grid
 
 
@@ -149,7 +149,7 @@ def get_shape():
 
 # Funcion para dibujar el texto en el centro
 def draw_text_middle(text, size, color, surface):
-    font = pygame.font.SysFont("comicsans", size, bold=True)
+    font = pygame.font.SysFont("arial", size, bold=True)
     label = font.render(text, 1, color)
 
     surface.blit(
@@ -167,18 +167,15 @@ def draw_grid(surface, row, col):
     sy = top_left_y
     for i in range(row):
         pygame.draw.line(
-            surface,
-            (128, 128, 128),
-            (sx, sy + i * block_size),
-            (sx + play_width, sy + i * block_size),
-        )
+            surface, (128, 128, 128), (sx, sy + i * 30), (sx + play_width, sy + i * 30)
+        )  # Lineas horizontales
         for j in range(col):
             pygame.draw.line(
                 surface,
                 (128, 128, 128),
-                (sx + j * block_size, sy),
-                (sx + j * block_size, sy + play_height),
-            )
+                (sx + j * 30, sy),
+                (sx + j * 30, sy + play_height),
+            )  # Lineas verticales
 
 
 # Funcion para limpiar las filas completas
@@ -188,13 +185,13 @@ def clear_rows(grid, locked):
         row = grid[i]
         if (0, 0, 0) not in row:
             inc += 1
+            # Agregar posiciones a remover
             ind = i
             for j in range(len(row)):
                 try:
                     del locked[(j, i)]
                 except:
                     continue
-
     if inc > 0:
         for key in sorted(list(locked), key=lambda x: x[1])[::-1]:
             x, y = key
@@ -204,22 +201,19 @@ def clear_rows(grid, locked):
 
 
 def draw_next_shape(shape, surface):
-    font = pygame.font.SysFont("comicsans", 30)
-    label = font.render("Proxima forma", 1, (255, 255, 255))
+    font = pygame.font.SysFont("arial", 30)
+    label = font.render("Proxima", 1, (255, 255, 255))
 
     sx = top_left_x + play_width + 50
     sy = top_left_y + play_height / 2 - 100
     format = shape.shape[shape.rotation % len(shape.shape)]
 
-    for i in range(len(format)):
-        row = list(format[i])
-        for j in range(len(row)):
-            if row[j] == "0":
+    for i, line in enumerate(format):
+        row = list(line)
+        for j, column in enumerate(row):
+            if column == "0":
                 pygame.draw.rect(
-                    surface,
-                    shape.color,
-                    (sx + j * block_size, sy + i * block_size, block_size, block_size),
-                    0,
+                    surface, shape.color, (sx + j * 30, sy + i * 30, 30, 30), 0
                 )
 
     surface.blit(label, (sx + 10, sy - 30))
@@ -227,9 +221,26 @@ def draw_next_shape(shape, surface):
 
 def draw_window(surface):
     surface.fill((0, 0, 0))
-    # Titulo Tetris
-    font = pygame.font.SysFont("comicsans", 60)
-    label = font.render("Tetris CRUI", 1, (255, 255, 255))
+    # TITULO TETRIS CRUI
+    font = pygame.font.SysFont("arial", 60)
+    label = font.render("TETRIS CRUI", 1, (255, 255, 255))
+
+    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), 30))
+
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            pygame.draw.rect(
+                surface,
+                grid[i][j],
+                (top_left_x + j * 30, top_left_y + i * 30, 30, 30),
+                0,
+            )
+
+    # DIBUJAR GRILLA Y BORDE
+    draw_grid(surface, 20, 10)
+    pygame.draw.rect(
+        surface, (255, 0, 0), (top_left_x, top_left_y, play_width, play_height), 5
+    )
 
 
 def main():
@@ -331,9 +342,7 @@ def main_menu():
     run = True
     while run:
         win.fill((0, 0, 0))
-        draw_text_middle(
-            "Presiona cualquier tecla para jugar", 60, (255, 255, 255), win
-        )
+        draw_text_middle("Presiona cualquier tecla", 60, (255, 255, 255), win)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
