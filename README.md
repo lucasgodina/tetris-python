@@ -52,4 +52,5 @@ Este proyecto fue desarrollado para la materia "Programación" de la carrera Tec
 - Godina, Lucas
 - Lujan, Rocio
 - Maez, Jazmín
+- Morais, Yamila
 - Sarmiento, Camila
