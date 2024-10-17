@@ -11,7 +11,7 @@ Este proyecto es una implementación del clásico juego Tetris utilizando la bib
 
 1. Clona este repositorio:
    ```sh
-   git clone https://github.com/tu-usuario/tetris-python.git
+   git clone https://github.com/lucasgodina/tetris-python.git
    ```
 2. Navega al directorio del proyecto:
    ```sh
