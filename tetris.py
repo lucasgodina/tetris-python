@@ -199,6 +199,10 @@ def clear_rows(grid, locked):
                 newKey = (x, y + inc)
                 locked[newKey] = locked.pop(key)
 
+    if inc == 4:
+        return 5  # Tetris
+    return inc  # 1 punto por línea
+
 
 def draw_next_shape(shape, surface):
     font = pygame.font.SysFont("arial", 30)
@@ -219,13 +223,22 @@ def draw_next_shape(shape, surface):
     surface.blit(label, (sx + 10, sy - 30))
 
 
-def draw_window(surface):
+def draw_window(surface, score):
     surface.fill((0, 0, 0))
     # TITULO TETRIS CRUI
     font = pygame.font.SysFont("arial", 60)
     label = font.render("TETRIS CRUI", 1, (255, 255, 255))
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), 30))
+
+    # MOSTRAR PUNTAJE
+    font = pygame.font.SysFont("arial", 30)
+    label = font.render(f"Puntaje: {score}", 1, (255, 255, 255))
+
+    sx = top_left_x + play_width + 50
+    sy = top_left_y + play_height / 2 - 100
+
+    surface.blit(label, (sx + 20, sy + 160))
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
@@ -254,11 +267,12 @@ def main():
     next_piece = get_shape()
     clock = pygame.time.Clock()
     fall_time = 0
+    score = 0  # INICIALIZAR PUNTAJE
 
     while run:
+        grid = create_grid(locked_positions)
         fall_speed = 0.27
 
-        grid = create_grid(locked_positions)
         fall_time += clock.get_rawtime()
         clock.tick()
 
@@ -322,10 +336,10 @@ def main():
             next_piece = get_shape()
             change_piece = False
 
-            # LLAMAR A LA FUNCION 4 VECES PARA LIMPIAR FILA COMPLETA
-            clear_rows(grid, locked_positions)
+            # INCREMENTAR PUNTAJE
+            score += clear_rows(grid, locked_positions)
 
-        draw_window(win)
+        draw_window(win, score)
         draw_next_shape(next_piece, win)
         pygame.display.update()
 
