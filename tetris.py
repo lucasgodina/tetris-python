@@ -19,6 +19,8 @@ block_size = 30
 top_left_x = (s_width - play_width) // 2
 top_left_y = s_height - play_height
 
+high_score = 10
+
 
 # TETROMINOS
 
@@ -138,6 +140,26 @@ def check_lost(positions):
         if y < 1:
             return True
     return False
+
+
+# Funcion para actualizar nuevo puntaje alto
+def update_high_score(new_score):
+    global high_score
+    if new_score > high_score:
+        high_score = new_score
+        return True
+    return False
+
+
+# Funcion para mostrar el puntaje alto a la izquierda de la pantalla
+def draw_high_score():
+    font = pygame.font.SysFont("arial", 30)
+    label = font.render(f"MEJOR: {high_score}", 1, (255, 255, 255))
+
+    sx = top_left_x - 200
+    sy = top_left_y + play_height / 2 - 100
+
+    win.blit(label, (sx + 20, sy + 160))
 
 
 # Funcion para obtener una nueva pieza
@@ -344,14 +366,19 @@ def main():
             score += clear_rows(grid, locked_positions)
 
         draw_window(win, score)
-        draw_next_shape(next_piece, win)
+        draw_next_shape(next_piece, win)  # Dibujar la siguiente pieza
+        draw_high_score()  # Dibujar puntaje alto
         pygame.display.update()
 
         # VERIFICAR SI EL JUGADOR PERDIO
         if check_lost(locked_positions):
+            if update_high_score(score) == True:
+                draw_text_middle(
+                    f"Nuevo puntaje alto! {high_score}", 40, (255, 255, 255), win
+                )
+            else:
+                draw_text_middle("Has perdido", 40, (255, 255, 255), win)
             run = False
-
-    draw_text_middle("Has perdido", 40, (255, 255, 255), win)
     pygame.display.update()
     pygame.time.delay(2000)
 
