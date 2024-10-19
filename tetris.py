@@ -152,13 +152,17 @@ def draw_text_middle(text, size, color, surface):
     font = pygame.font.SysFont("arial", size, bold=True)
     label = font.render(text, 1, color)
 
-    surface.blit(
-        label,
-        (
-            top_left_x + play_width / 2 - (label.get_width() / 2),
-            top_left_y + play_height / 2 - label.get_height() / 2,
-        ),
-    )
+    # Calcular la posición del rectángulo y del texto
+    rect_width = label.get_width() + 20
+    rect_height = label.get_height() + 20
+    rect_x = top_left_x + play_width / 2 - rect_width / 2
+    rect_y = top_left_y + play_height / 2 - rect_height / 2
+
+    # Dibujar el rectángulo negro
+    pygame.draw.rect(surface, (0, 0, 0), (rect_x, rect_y, rect_width, rect_height))
+
+    # Dibujar el texto
+    surface.blit(label, (rect_x + 10, rect_y + 10))
 
 
 # Funcion para dibujar la grilla
@@ -271,7 +275,7 @@ def main():
 
     while run:
         grid = create_grid(locked_positions)
-        fall_speed = 0.27
+        fall_speed = 0.30
 
         fall_time += clock.get_rawtime()
         clock.tick()
