@@ -294,13 +294,16 @@ def main():
     clock = pygame.time.Clock()
     fall_time = 0
     score = 0  # INICIALIZAR PUNTAJE
+    fall_speed = 0.30  # VELOCIDAD INICIAL DE CAIDA
 
     while run:
         grid = create_grid(locked_positions)
-        fall_speed = 0.30
 
         fall_time += clock.get_rawtime()
         clock.tick()
+
+        # AUMENTAR LA VELOCIDAD DE CAIDA CADA 5 PUNTOS
+        fall_speed = 0.30 - (score // 5) * 0.02
 
         #  CAIDA DE PIEZA
         if fall_time / 1000 >= fall_speed:
