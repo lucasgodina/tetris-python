@@ -10,8 +10,8 @@ representadas en orden del 0 - 6
 pygame.font.init()
 
 # VARIABLES GLOBALES
-s_width = 800
-s_height = 700
+s_width = 1366
+s_height = 768
 play_width = 300  # 300 // 10 = 30 width x block
 play_height = 600  # 600 // 20 = 20 height x block
 block_size = 30
@@ -401,6 +401,6 @@ def main_menu():
     pygame.display.quit()
 
 
-win = pygame.display.set_mode((s_width, s_height))
+win = pygame.display.set_mode((s_width, s_height), pygame.FULLSCREEN)
 pygame.display.set_caption("Tetris CRUI")
 main_menu()  # EMPEZAR EL JUEGO
